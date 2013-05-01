@@ -1,0 +1,34 @@
+PingPong
+Endpoint Ping;
+Endpoint Pong;
+
+Sequences {
+    PingPongSeq: Ping.start_ping -> Pong.perform_pong -> Ping.next_ping -> Pong.final_pong;
+}
+
+Sequence PingPongSeq (Number start_num) returns Number final_num {
+    Ping.start_ping {
+       start_num += 1;
+    }
+    Pong.perform_pong {
+       start_num += 1;
+    }
+    Ping.next_ping {
+       start_num += 1;
+    }
+    Pong.final_pong {
+       start_num += 1;
+       final_num = start_num;
+    }
+}
+
+Ping
+{
+     Public Function ping_seq(Number to_ping_with) returns Number
+     {
+        return start_ping(to_ping_with);
+     }
+}
+
+Pong
+{}
