@@ -10,7 +10,7 @@ Sequence SeqSendMsg (Text msg)
   ChatterA.send_msg {}
   ChatterB.receive_msg
   {
-    signal(display_msg_func, msg);
+    display_msg_func(msg);
   }
 }
 

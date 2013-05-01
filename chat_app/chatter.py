@@ -6,40 +6,34 @@ from emitted import ChatterA, ChatterB
 import time
 HOSTNAME = '127.0.0.1'
 PORT = 6922
-SLEEP_TIME = .1
+SLEEP_TIME = .2
+quit = False
 
 def display_msg(endpoint, msg): 
   # note: a more sophisticated app might write to a gui instead.
-  print ('MSG: ' + msg)
+  global quit
+  print ('RECEIVED: ' + msg)
+  if (msg == 'quit'):
+    quit = True
 
 def run_chatter_a():
   # runs in accept mode
-  Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, display_msg, 
-      connected_callback=listen_for_other_side)
-  time.sleep(10)
+  global quit
+  Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, display_msg,
+      connected_callback=listen_for_user_input)
+  while True:
+    if quit:
+      break
+    time.sleep(SLEEP_TIME)
 
 def run_chatter_b():
   chatter_b = Waldo.tcp_connect(ChatterB, HOSTNAME, PORT, display_msg)
   listen_for_user_input(chatter_b)
 
-def listen_for_other_side(endpoint_obj):
-  '''
-  Continuously poll to see if there's a message from other side to display.
-  '''
-  while True:
-    time.sleep(SLEEP_TIME)
-    msg = endpoint_obj.service_signal()
-    if msg is not None:
-      display_msg(endpoint_obj, msg)
-    elif msg == 'quit':
-      break
-
-    
-
 def listen_for_user_input(endpoint_obj):
   print "Type 'quit' to exit." 
   while True:
-    msg_to_send = str(raw_input('message: '))
+    msg_to_send = str(raw_input())
     endpoint_obj.send_msg_to_other_side(msg_to_send)
     if msg_to_send == "quit":
       break
