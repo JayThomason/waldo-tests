@@ -14,8 +14,9 @@ def display_msg(endpoint, msg):
 
 def run_chatter_a():
   # runs in accept mode
-  chatter_a = Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, display_msg)
-  listen_for_other_side(chatter_a)
+  Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, display_msg, 
+      connected_callback=listen_for_other_side)
+  time.sleep(10)
 
 def run_chatter_b():
   chatter_b = Waldo.tcp_connect(ChatterB, HOSTNAME, PORT, display_msg)
@@ -52,5 +53,5 @@ if __name__ == '__main__':
   '''
   if (sys.argv[1] == 'a'):
     run_chatter_a()
-  else:
+  elif sys.argv[1] == 'b':
     run_chatter_b()
