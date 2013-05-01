@@ -6,7 +6,7 @@ from emitted import ChatterA, ChatterB
 import time
 HOSTNAME = '127.0.0.1'
 AWS_IP = '54.235.158.36'
-PORT = 6922
+PORT = 8080
 SLEEP_TIME = .2
 quit = False
 
