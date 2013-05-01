@@ -5,6 +5,7 @@ from lib import Waldo
 from emitted import ChatterA, ChatterB
 import time
 HOSTNAME = '127.0.0.1'
+AWS_IP = '54.235.158.36'
 PORT = 6922
 SLEEP_TIME = .2
 quit = False
@@ -45,6 +46,10 @@ if __name__ == '__main__':
   Executing another process passing in 'b' starts ChatterB taking input 
   from user.
   '''
+  if (len(sys.argv) == 1):
+    print 'Correct usage: python chatter.py [a|b] [aws]'
+  elif (len(sys.argv) > 2 and sys.argv[1] == 'b' and sys.argv[2] == 'aws'):
+    HOSTNAME = AWS_IP
   if (sys.argv[1] == 'a'):
     run_chatter_a()
   elif sys.argv[1] == 'b':
