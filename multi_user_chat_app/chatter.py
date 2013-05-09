@@ -4,6 +4,8 @@ sys.path.append(os.path.join('..','..','Waldo'))
 from lib import Waldo
 from emitted import ChatterA, ChatterB
 import time, Queue
+
+# Global Variables
 HOSTNAME = '127.0.0.1'
 AWS_IP = '54.235.158.36'
 PORT = 6767
@@ -13,8 +15,11 @@ quit = False
 messages = Queue.Queue()
 connections = list()
 
+# Function Definitions
 def display_msg(endpoint, msg): 
-  # note: a more sophisticated app might write to a gui instead.
+  ''' 
+  Displays a message received by an endpoint on the screen.
+  '''
   global quit
   print ('RECEIVED: ' + msg)
   if (msg == 'quit'):
@@ -28,7 +33,9 @@ def queue_msg(endpoint, msg):
   messages.put((endpoint, msg))
 
 def run_chatter_a():
-  # runs in accept mode
+  '''
+  Runs an accepting single chatter.
+  '''
   global quit
   Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, display_msg,
       connected_callback=listen_for_user_input)
@@ -38,22 +45,34 @@ def run_chatter_a():
     time.sleep(SLEEP_TIME)
 
 def run_chatter_b():
-  # user connecting to server
+  ''' 
+  Runs a connecting single chatter. Connects to the chat server.
+  '''
   chatter_b = Waldo.tcp_connect(ChatterB, HOSTNAME, PORT, display_msg)
   listen_for_user_input(chatter_b)
 
 def run_server():
+  '''
+  Runs the multi-connection chat server.
+  '''
+  global quit
+  Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, queue_msg,
+      connected_callback=newConnectionCallback)
+  listen_for_messages()
+
+def newConnectionCallback(endpoint_obj):
+  '''
+  Establishes a new server-side connection.
+  '''
   global connections
-  # runs in accept mode
-  for i in range(NUM_CONNECTIONS):
-    connections.append(Waldo.tcp_accept(ChatterA, HOSTNAME, PORT + i, queue_msg,
-        connected_callback=listen_for_messages))
-  while True:
-    if quit:
-      break
-    time.sleep(SLEEP_TIME)
+  print 'Connection established.'
+  connections.append(endpoint_obj)
 
 def listen_for_user_input(endpoint_obj):
+  '''
+  Loops continuously listening for user input.
+  Returns when the user message is 'quit'.
+  '''
   print "Type 'quit' to exit." 
   while True:
     msg_to_send = str(raw_input())
@@ -61,17 +80,26 @@ def listen_for_user_input(endpoint_obj):
     if msg_to_send == "quit":
       break
 
-def listen_for_messages(endpoint_obj):
-  global messages
+def listen_for_messages():
+  '''
+  Continuously polls the message queue.
+  When the queue has messages, they are sent out to endpoint which
+  did not send the original message.
+  '''
+  global messages, connections
   print "New connection."
   while True:
     if not messages.empty():
       msg_pair = messages.get()
-      if msg_pair[0] != endpoint_obj:
-        endpoint_obj.send_msg_to_other_side(msg_pair[1])
-        print msg_pair
+      for endpoint_obj in connections:
+        if endpoint_obj != msg_pair[0]:
+          endpoint_obj.send_msg_to_other_side(msg_pair[1])
+      print msg_pair
+    else:
+      time.sleep(SLEEP_TIME)
 
 
+# Main
 if __name__ == '__main__':
   '''
   Passing in argument 'a' starts ChatterA listening.
@@ -86,7 +114,7 @@ if __name__ == '__main__':
   print HOSTNAME, PORT
   if (sys.argv[1] == 'a'):
     run_chatter_a()
-  elif sys.argv[1] == 'b':
+  elif sys.argv[1] == 'chat':
     run_chatter_b()
-  elif sys.argv[1] == 's':
+  elif sys.argv[1] == 'server':
     run_server()
