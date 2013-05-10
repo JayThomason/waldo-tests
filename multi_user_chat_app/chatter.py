@@ -7,10 +7,12 @@ import time, Queue
 
 # Global Variables
 HOSTNAME = '127.0.0.1'
-AWS_IP = '54.235.158.36'
-PORT = 6767
+#AWS_IP = '54.235.158.36'
+PORT = 6767 ### for AWS testing purposes; normaly 6767
+#HOSTNAME = AWS_IP ### for AWS testing purposes
 SLEEP_TIME = .2
 NUM_CONNECTIONS = 2
+ANON = 'anon'
 quit = False
 messages = Queue.Queue()
 connections = list()
@@ -21,7 +23,7 @@ def display_msg(endpoint, msg):
   Displays a message received by an endpoint on the screen.
   '''
   global quit
-  print ('RECEIVED: ' + msg)
+  print (msg)
   if (msg == 'quit'):
     quit = True
 
@@ -74,8 +76,12 @@ def listen_for_user_input(endpoint_obj):
   Returns when the user message is 'quit'.
   '''
   print "Type 'quit' to exit." 
+  username = str(raw_input('Choose a username (blank for anon)'))
+  if len(username) == 0:
+    username = ANON
   while True:
     msg_to_send = str(raw_input())
+    msg_to_send = username + ': ' + msg_to_send
     endpoint_obj.send_msg_to_other_side(msg_to_send)
     if msg_to_send == "quit":
       break
@@ -111,10 +117,10 @@ if __name__ == '__main__':
     print 'Correct usage: python chatter.py [a|b] [aws]'
   elif (len(sys.argv) > 2 and sys.argv[1] == 'b'):
     PORT = int(sys.argv[2])
-  print HOSTNAME, PORT
   if (sys.argv[1] == 'a'):
     run_chatter_a()
   elif sys.argv[1] == 'chat':
+    print HOSTNAME, PORT
     run_chatter_b()
   elif sys.argv[1] == 'server':
     run_server()
