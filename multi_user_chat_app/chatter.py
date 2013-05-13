@@ -7,11 +7,9 @@ import time, Queue
 
 # Global Variables
 HOSTNAME = '127.0.0.1'
-#AWS_IP = '54.235.158.36'
-PORT = 6767 ### for AWS testing purposes; normaly 6767
-#HOSTNAME = AWS_IP ### for AWS testing purposes
+# AWS_IP = '54.235.158.36'
+PORT = 6767
 SLEEP_TIME = .2
-NUM_CONNECTIONS = 2
 ANON = 'anon'
 quit = False
 messages = Queue.Queue()
@@ -34,19 +32,7 @@ def queue_msg(endpoint, msg):
   global messages
   messages.put((endpoint, msg))
 
-def run_chatter_a():
-  '''
-  Runs an accepting single chatter.
-  '''
-  global quit
-  Waldo.tcp_accept(ChatterA, HOSTNAME, PORT, display_msg,
-      connected_callback=listen_for_user_input)
-  while True:
-    if quit:
-      break
-    time.sleep(SLEEP_TIME)
-
-def run_chatter_b():
+def run_chatter_client():
   ''' 
   Runs a connecting single chatter. Connects to the chat server.
   '''
@@ -75,15 +61,17 @@ def listen_for_user_input(endpoint_obj):
   Loops continuously listening for user input.
   Returns when the user message is 'quit'.
   '''
-  print "Type 'quit' to exit." 
+  print "Type 'quit' to exit chatroom." 
   username = str(raw_input('Choose a username (blank for anon)'))
   if len(username) == 0:
     username = ANON
   while True:
     msg_to_send = str(raw_input())
-    msg_to_send = username + ': ' + msg_to_send
-    endpoint_obj.send_msg_to_other_side(msg_to_send)
-    if msg_to_send == "quit":
+    if msg_to_send != "quit":
+      msg_to_send = username + ': ' + msg_to_send
+      endpoint_obj.send_msg_to_other_side(msg_to_send)
+    else:
+      endpoint_obj.send_msg_to_other_side(msg_to_send)
       break
 
 def listen_for_messages():
@@ -98,6 +86,9 @@ def listen_for_messages():
     if not messages.empty():
       msg_pair = messages.get()
       for endpoint_obj in connections:
+        if msg_pair[1] == 'quit' and endpoint_obj == msg_pair[0]:
+          connections.remove(endpoint_obj)
+          print 'Endpoint disconnected: ', endpoint_obj
         if endpoint_obj != msg_pair[0]:
           endpoint_obj.send_msg_to_other_side(msg_pair[1])
       print msg_pair
@@ -117,10 +108,8 @@ if __name__ == '__main__':
     print 'Correct usage: python chatter.py [a|b] [aws]'
   elif (len(sys.argv) > 2 and sys.argv[1] == 'b'):
     PORT = int(sys.argv[2])
-  if (sys.argv[1] == 'a'):
-    run_chatter_a()
-  elif sys.argv[1] == 'chat':
+  if sys.argv[1] == 'client':
     print HOSTNAME, PORT
-    run_chatter_b()
+    run_chatter_client()
   elif sys.argv[1] == 'server':
     run_server()
