@@ -1,0 +1,35 @@
+WhoApp
+Endpoint EndpointA;
+Endpoint EndpointB;
+
+Sequences {
+  SeqSendList: EndpointA.send_request -> EndpointB.send_list;
+}
+
+Sequence SeqSendList () returns Text list
+{
+  EndpointA.send_request {}
+
+  EndpointB.send_list
+  {
+    list = retrieve_user_list_func();
+  }
+}
+
+EndpointA
+{
+  Public Function ask_for_list() returns Text
+  {
+    return send_request();
+  }
+}
+
+EndpointB 
+{
+  Function (returns: Text) retrieve_user_list_func;
+
+  onCreate(Function (in: Text; returns: Nothing) init_retrieve_user_list_func)
+  {
+    retrieve_user_list_func = init_retrieve_user_list_func;
+  }
+}
