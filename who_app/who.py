@@ -43,9 +43,9 @@ if __name__ == '__main__':
   '''
   if len(sys.argv) <= 1 or len(sys.argv) > 3:
     print 'Correct usage: python who.py [ask|tell]'
-  if sys.argv[1] == 'ask':
-    if len(sys.argv) == 4:
-      HOSTNAME = sys.argv[3]
+  elif sys.argv[1] == 'ask':
+    if len(sys.argv) == 3:
+      HOSTNAME = sys.argv[2]
       ask()
   elif sys.argv[1] == 'tell':
     tell()
