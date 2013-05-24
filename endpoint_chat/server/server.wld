@@ -3,17 +3,23 @@ Endpoint Server;
 
 Server
 {
-  Map (from: Number, to: Endpoint) clients;
+  Map (from: Text, to: Endpoint) clients;
 
-  Public Function add_endpoint(Endpoint endpt)
+  Function (in: Number; returns: Nothing) display_msg_func;
+
+  onCreate(Function (in: Number; returns: Nothing) init_display_msg_func)
   {
-    Number id = endpt.get_id();
-    clients[id] = endpt;
+    display_msg_func = init_display_msg_func;
+  }
+
+  Public Function add_endpoint(Endpoint endpt, Text endpt_id)
+  {
+    clients[endpt_id] = endpt;
   }
 
   Public Function broadcast_msg(Text msg)
   {
-    for (Number id in clients)
+    for (Text id in clients)
     {
       Endpoint clientHandler = clients[id];
       clientHandler.receive_msg(msg);

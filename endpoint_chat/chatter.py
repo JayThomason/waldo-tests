@@ -2,14 +2,15 @@ import sys, os
 sys.path.append(os.path.join('..','..','Waldo'))
 
 from lib import Waldo
-from server.server import Server
-from client.client import Client, ClientHandler
+from server.emitted import Server
+from client.emitted import Client, ClientHandler
 import time
 
 # Global Variables
 HOSTNAME = '0.0.0.0'
 PORT = 6767
 SLEEP_TIME = 2
+ANON = 'anon'
 server = None
 
 # Function Definitions
@@ -27,16 +28,21 @@ def run_chatter_client():
   listen_for_user_input(client)
 
 def serverConnectCallback(handler_obj):
-  handler_obj.add_to_server(handler_obj)
+  '''
+  Adds a new ClientHandler to the Server.
+  '''
+  global server
+  server.add_endpoint(handler_obj, str(handler_obj))
 
 def run_server():
   '''
   Runs the multi-connection chat server.
   '''
   global server
-  server = Waldo.no_partner_create(Server)
+  server = Waldo.no_partner_create(Server, display_msg)
   print server
-  Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg)
+  Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg,
+      connected_callback=serverConnectCallback)
   while True:
     time.sleep(SLEEP_TIME)
 
