@@ -1,0 +1,50 @@
+ChatApp
+Endpoint Client;
+Endpoint ClientHandler;
+
+Sequences {
+  SeqSendMsg: Client.start_send_msg -> ClientHandler.broadcast_msg;
+  SeqRecvMsg: ClientHandler.send_msg -> Client.receive_msg;
+}
+
+Sequence SeqSendMsg (Text msg)
+{
+  Client.start_send_msg {}
+  ClientHandler.broadcast_msg
+  {
+    server.broadcast_msg(msg);
+  }
+}
+
+Sequence SeqRecvMsg (Text msg) 
+{
+  ClientHandler.send_msg {}
+  Client.receive_msg 
+  {
+    display_msg_func(msg);
+  }
+}
+
+Client
+{
+  Function (in: Text; returns: Nothing) display_msg_func;
+
+  onCreate(Function (in: Text; returns: Nothing) init_display_msg_func)
+  {
+    display_msg_func = init_display_msg_func;
+  }
+
+  Public Function send_msg (Text msg)
+  {
+    start_send_msg(msg);
+  }
+}
+
+ClientHandler
+{
+  Endpoint server;
+
+  Public Function broadcast(Text msg) {
+    server.broadcast_msg(msg);
+  }
+}

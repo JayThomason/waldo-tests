@@ -1,0 +1,22 @@
+Server
+Endpoint Server;
+
+Server
+{
+  Map (from: Number, to: Endpoint) clients;
+
+  Public Function add_endpoint(Endpoint endpt)
+  {
+    Number id = endpt.get_id();
+    clients[id] = endpt;
+  }
+
+  Public Function broadcast_msg(Text msg)
+  {
+    for (Number id in clients)
+    {
+      Endpoint client = clients[id];
+      client.receive_msg(msg);
+    }
+  }
+}
