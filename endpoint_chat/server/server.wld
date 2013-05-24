@@ -15,8 +15,8 @@ Server
   {
     for (Number id in clients)
     {
-      Endpoint client = clients[id];
-      client.receive_msg(msg);
+      Endpoint clientHandler = clients[id];
+      clientHandler.receive_msg(msg);
     }
   }
 }
