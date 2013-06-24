@@ -37,7 +37,7 @@ Client
 
   Public Function send_msg (Text msg)
   {
-    start_send_msg(msg);
+    SeqSendMsg(msg);
   }
 }
 
@@ -55,6 +55,6 @@ ClientHandler
 
   Public Function receive_msg (Text msg)
   {
-    start_receive_msg(msg);
+    SeqRecvMsg(msg);
   }
 }
