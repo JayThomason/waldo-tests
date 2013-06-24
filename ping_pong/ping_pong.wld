@@ -26,7 +26,7 @@ Ping
 {
      Public Function ping_seq(Number to_ping_with) returns Number
      {
-        return start_ping(to_ping_with);
+        return PingPongSeq(to_ping_with);
      }
 }
 
