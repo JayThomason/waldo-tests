@@ -1,10 +1,10 @@
 import sys, os
 sys.path.append(os.path.join('..','..','Waldo'))
 
-from lib import Waldo
+from waldo.lib import Waldo
 from emitted import EndpointA, EndpointB
 import time, subprocess
-HOSTNAME = '127.0.0.1'
+HOSTNAME = '0.0.0.0'
 WAIT_TIME = 10
 PORT = 6767
 
@@ -42,10 +42,10 @@ if __name__ == '__main__':
   Passing in argument 'ask' starts the asking side.
   '''
   if len(sys.argv) <= 1 or len(sys.argv) > 3:
-    print 'Correct usage: python who.py [ask|tell]'
-  elif sys.argv[1] == 'ask':
-    if len(sys.argv) == 3:
-      HOSTNAME = sys.argv[2]
-      ask()
+    print 'Correct usage: python who.py [ask|tell hostname]'
+  if len(sys.argv) == 3:
+    HOSTNAME = sys.argv[2]
+  if sys.argv[1] == 'ask':
+    ask()
   elif sys.argv[1] == 'tell':
     tell()

@@ -20,7 +20,7 @@ EndpointA
 {
   Public Function ask_for_list() returns Text
   {
-    return send_request();
+    return SeqSendList();
   }
 }
 
