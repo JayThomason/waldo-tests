@@ -1,7 +1,7 @@
 import sys, os
 sys.path.append(os.path.join('..','..','Waldo'))
 
-from lib import Waldo
+from waldo.lib import Waldo
 from emitted import ChatterA, ChatterB
 import time
 HOSTNAME = '127.0.0.1'

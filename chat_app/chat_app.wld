@@ -25,7 +25,7 @@ ChatterA
 
   Public Function send_msg_to_other_side (Text msg)
   {
-    send_msg(msg);
+    SeqSendMsg(msg);
   }
 }
 
