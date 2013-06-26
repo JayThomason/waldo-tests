@@ -12,16 +12,17 @@ Server
     display_msg_func = init_display_msg_func;
   }
 
-  Public Function add_endpoint(Endpoint endpt, Text endpt_id)
+  Public Function add_endpoint(Endpoint endpt)
   {
-    clients[endpt_id] = endpt;
+    Text endptId = endpt.id();
+    clients[endptId] = endpt;
   }
 
   Public Function broadcast_msg(Text msg)
   {
-    for (Text id in clients)
+    for (Text endptId in clients)
     {
-      Endpoint clientHandler = clients[id];
+      Endpoint clientHandler = clients[endptId];
       clientHandler.receive_msg(msg);
     }
   }

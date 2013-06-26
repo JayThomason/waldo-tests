@@ -27,13 +27,6 @@ def run_chatter_client():
   client = Waldo.tcp_connect(Client, HOSTNAME, PORT, display_msg)
   listen_for_user_input(client)
 
-def serverConnectCallback(handler_obj):
-  '''
-  Adds a new ClientHandler to the Server.
-  '''
-  global server
-  server.add_endpoint(handler_obj, str(handler_obj))
-
 def run_server():
   '''
   Runs the multi-connection chat server.
@@ -41,8 +34,7 @@ def run_server():
   global server
   server = Waldo.no_partner_create(Server, display_msg)
   print server
-  Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg,
-      connected_callback=serverConnectCallback)
+  Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg)
   while True:
     time.sleep(SLEEP_TIME)
 
