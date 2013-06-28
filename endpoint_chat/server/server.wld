@@ -15,6 +15,7 @@ Server
   Public Function add_endpoint(Endpoint endpt)
   {
     Text endptId = endpt.id();
+    display_msg_func(endpt.id());
     clients[endptId] = endpt;
   }
 
@@ -25,5 +26,10 @@ Server
       Endpoint clientHandler = clients[endptId];
       clientHandler.receive_msg(msg);
     }
+  }
+
+  Public Function get_clients() returns Map(from: Text, to: Endpoint)
+  {
+    return clients;
   }
 }

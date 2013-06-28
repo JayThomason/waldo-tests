@@ -37,6 +37,7 @@ def run_server():
   Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg)
   while True:
     time.sleep(SLEEP_TIME)
+    print len(server.get_clients())
 
 def listen_for_user_input(endpoint_obj):
   '''
