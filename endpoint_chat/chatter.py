@@ -37,7 +37,6 @@ def run_server():
   Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg)
   while True:
     time.sleep(SLEEP_TIME)
-    print len(server.get_clients())
 
 def listen_for_user_input(endpoint_obj):
   '''
@@ -56,10 +55,10 @@ def listen_for_user_input(endpoint_obj):
 # Main
 if __name__ == '__main__':
   '''
-  Passing in argument 'a' starts ChatterA listening.
+  Passing in 'server' starts the server, passing in 'client' starts up a
+  client which connects to the server.
 
-  Executing another process passing in 'b' starts ChatterB taking input 
-  from user.
+  Optional args include the hostname.
   '''
   if (len(sys.argv) == 1):
     print 'Correct usage: python chatter.py [client|server] [aws]'

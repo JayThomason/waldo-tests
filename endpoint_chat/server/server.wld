@@ -15,7 +15,14 @@ Server
   Public Function add_endpoint(Endpoint endpt)
   {
     Text endptId = endpt.id();
+    display_msg_func(0);
     display_msg_func(endpt.id());
+    display_msg_func(0);
+    display_msg_func(self.id());
+    display_msg_func(0);
+    display_msg_func(0);
+    display_msg_func(0);
+    display_msg_func(0);
     clients[endptId] = endpt;
   }
 
