@@ -20,6 +20,12 @@ def display_msg(endpoint, msg):
   '''
   print (msg)
 
+def display_hex_string(endpoint, string):
+  '''
+  Displays a string as hex character codes separated by colons.
+  '''
+  print ':'.join(x.encode('hex') for x in string)
+
 def run_chatter_client():
   ''' 
   Runs a connecting single chatter. Connects to the chat server.
@@ -32,7 +38,8 @@ def run_server():
   Runs the multi-connection chat server.
   '''
   global server
-  server = Waldo.no_partner_create(Server, display_msg)
+  # server = Waldo.no_partner_create(Server, display_msg)
+  server = Waldo.no_partner_create(Server, display_hex_string)
   print server
   Waldo.tcp_accept(ClientHandler, HOSTNAME, PORT, server, display_msg)
   while True:

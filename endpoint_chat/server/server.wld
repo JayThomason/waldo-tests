@@ -17,7 +17,6 @@ Server
     Text endptId = endpt.id();
     display_msg_func(endpt.id());
     display_msg_func(self.id());
-    display_msg_func(id());
     clients[endptId] = endpt;
   }
 

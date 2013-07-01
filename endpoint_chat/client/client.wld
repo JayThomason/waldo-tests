@@ -51,8 +51,7 @@ ClientHandler
   {
     display_msg_func = init_display_msg_func;
     server = server_endpoint;
-    Endpoint self_endpt = self;
-    server.add_endpoint(self_endpt);
+    server.add_endpoint(self);
   }
 
   Public Function receive_msg (Text msg)
